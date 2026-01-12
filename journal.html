@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Simple Journal App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+    }
+    input, textarea, button {
+      width: 100%;
+      margin-top: 10px;
+      padding: 10px;
+      font-size: 16px;
+    }
+    textarea {
+      height: 150px;
+    }
+    button {
+      background: black;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    button:hover {
+      opacity: 0.8;
+    }
+    .journal-list {
+      margin-top: 30px;
+    }
+    .journal-item {
+      background: #eee;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>📒 Journal Harian</h1>
+
+    <input type="text" id="title" placeholder="Judul Jurnal">
+    <textarea id="content" placeholder="Tulis jurnal kamu di sini..."></textarea>
+    <button onclick="saveJournal()">Simpan Jurnal</button>
+
+    <div class="journal-list">
+      <h3>📚 Daftar Jurnal</h3>
+      <div id="journals"></div>
+    </div>
+  </div>
+
+  <script>
+    let journals = JSON.parse(localStorage.getItem("journals")) || [];
+
+    function saveJournal() {
+      const title = document.getElementById("title").value;
+      const content = document.getElementById("content").value;
+
+      if (title === "" || content === "") {
+        alert("Judul dan isi jurnal tidak boleh kosong!");
+        return;
+      }
+
+      const journal = {
+        title: title,
+        content: content,
+        date: new Date().toLocaleDateString("id-ID")
+      };
+
+      journals.push(journal);
+      localStorage.setItem("journals", JSON.stringify(journals));
+
+      document.getElementById("title").value = "";
+      document.getElementById("content").value = "";
+
+      showJournals();
+    }
+
+    function showJournals() {
+      const list = document.getElementById("journals");
+      list.innerHTML = "";
+
+      journals.forEach((j, index) => {
+        const div = document.createElement("div");
+        div.className = "journal-item";
+        div.innerHTML = `<strong>${j.title}</strong><br><small>${j.date}</small>`;
+        div.onclick = () => {
+          alert(j.title + "\n\n" + j.content);
+        };
+        list.appendChild(div);
+      });
+    }
+
+    showJournals();
+  </script>
+
+</body>
+</html>
